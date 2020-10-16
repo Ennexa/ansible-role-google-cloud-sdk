@@ -1,15 +1,23 @@
 ---
 - name: Ensure depdency is installed (Ubuntu).
-  apt: name=apt-transport-https state=present
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - gnupg
+    state: present
 
 - name: Add Google Cloud SDK GPG Key
   apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     state: present
+    keyring: /usr/share/keyrings/cloud.google.gpg
 
 - name: Add Google Cloud SDK Repository
   apt_repository:
-    repo: 'deb http://packages.cloud.google.com/apt cloud-sdk-{{ ansible_distribution_release }} main'
+    repo: >-
+      deb [signed-by=/usr/share/keyrings/cloud.google.gpg]
+      http://packages.cloud.google.com/apt cloud-sdk main
     state: present
     filename: google-cloud-sdk
     update_cache: yes
